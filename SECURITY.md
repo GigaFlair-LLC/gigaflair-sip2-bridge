@@ -12,7 +12,7 @@
 
 If you discover a security vulnerability in the GigaFlair SIP2 Bridge, please disclose it responsibly:
 
-1. **Email**: Send a detailed report to the maintainer via GitHub's [private vulnerability reporting](https://github.com/GigaFlair-LLC/gigaflair-sip2-json/security/advisories/new).
+1. **Email**: Send a detailed report to the maintainer via GitHub's [private vulnerability reporting](https://github.com/GigaFlair-LLC/gigaflair-sip2-bridge/security/advisories/new).
 2. **Include**: A description of the vulnerability, steps to reproduce, potential impact, and (if available) a suggested fix.
 3. **Response time**: You will receive an acknowledgement within **48 hours** and a resolution timeline within **7 days**.
 4. **Coordination**: Please allow time to patch and release a fix before public disclosure.

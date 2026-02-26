@@ -10,9 +10,9 @@ async function start() {
         const HOST = server.config.HOST;
 
         await server.listen({ port: PORT, host: HOST });
-        console.log(`sip2-json Bridge listening on ${HOST}:${PORT}`);
+        console.log(`GigaFlair SIP2 Bridge listening on ${HOST}:${PORT}`);
     } catch (err) {
-        console.error('Failed to start sip2-json Bridge:', err);
+        console.error('Failed to start GigaFlair SIP2 Bridge:', err);
         process.exit(1);
     }
 }

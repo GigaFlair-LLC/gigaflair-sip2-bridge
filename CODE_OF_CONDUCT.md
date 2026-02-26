@@ -34,7 +34,7 @@ This Code of Conduct applies within all community spaces and also applies when a
 
 ## Enforcement
 
-Instances of abusive, harassing, or otherwise unacceptable behavior may be reported to the project maintainers via [GitHub's private reporting](https://github.com/GigaFlair-LLC/gigaflair-sip2-json/security/advisories/new). All complaints will be reviewed and investigated promptly and fairly. All maintainers are obligated to respect the privacy and security of the reporter.
+Instances of abusive, harassing, or otherwise unacceptable behavior may be reported to the project maintainers via [GitHub's private reporting](https://github.com/GigaFlair-LLC/gigaflair-sip2-bridge/security/advisories/new). All complaints will be reviewed and investigated promptly and fairly. All maintainers are obligated to respect the privacy and security of the reporter.
 
 ## Attribution
 

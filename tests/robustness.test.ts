@@ -3,7 +3,7 @@ import { createServer } from '../src/server.js';
 import { FastifyInstance } from 'fastify';
 import { MockLmsServer } from './mock-lms.js';
 
-describe('sip2-json Robustness Test', () => {
+describe('GigaFlair SIP2 Bridge Robustness Test', () => {
     let mockLms: MockLmsServer;
     let app: FastifyInstance;
     const TEST_PORT_LMS = 6006;

@@ -39,8 +39,8 @@ The bridge requires network connectivity to your ILS server's SIP2 port (typical
 
 ```bash
 # Clone the repository
-git clone https://github.com/GigaFlair/sip2-json.git
-cd sip2-json
+git clone https://github.com/GigaFlair-LLC/gigaflair-sip2-bridge.git
+cd gigaflair-sip2-bridge
 
 # Install dependencies
 npm install

@@ -1,6 +1,6 @@
 # GigaFlair SIP2 Bridge
 
-[![CI](https://github.com/GigaFlair-LLC/gigaflair-sip2-json/actions/workflows/ci.yml/badge.svg)](https://github.com/GigaFlair-LLC/gigaflair-sip2-json/actions/workflows/ci.yml)
+[![CI](https://github.com/GigaFlair-LLC/gigaflair-sip2-bridge/actions/workflows/ci.yml/badge.svg)](https://github.com/GigaFlair-LLC/gigaflair-sip2-bridge/actions/workflows/ci.yml)
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](LICENSE)
 [![Node.js](https://img.shields.io/badge/node-%3E%3D20.x-brightgreen)](https://nodejs.org)
 

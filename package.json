@@ -1,5 +1,5 @@
 {
-  "name": "sip2-json",
+  "name": "gigaflair-sip2-bridge",
   "version": "1.0.0",
   "private": true,
   "type": "module",

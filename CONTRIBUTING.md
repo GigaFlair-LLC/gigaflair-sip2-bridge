@@ -23,8 +23,8 @@ This project follows our [Code of Conduct](CODE_OF_CONDUCT.md). By participating
 
 ## Getting Started
 
-- **Bug reports**: Search [existing issues](https://github.com/GigaFlair-LLC/gigaflair-sip2-json/issues) before opening a new one. Use the **Bug Report** template.
-- **Feature requests**: Open a [feature request](https://github.com/GigaFlair-LLC/gigaflair-sip2-json/issues/new?template=feature_request.md) and describe the use case.
+- **Bug reports**: Search [existing issues](https://github.com/GigaFlair-LLC/gigaflair-sip2-bridge/issues) before opening a new one. Use the **Bug Report** template.
+- **Feature requests**: Open a [feature request](https://github.com/GigaFlair-LLC/gigaflair-sip2-bridge/issues/new?template=feature_request.md) and describe the use case.
 - **Security vulnerabilities**: Do **not** open a public issue. Follow the [Security Policy](SECURITY.md) instead.
 
 ---
@@ -39,8 +39,8 @@ This project follows our [Code of Conduct](CODE_OF_CONDUCT.md). By participating
 ### Install and Run
 
 ```bash
-git clone https://github.com/GigaFlair-LLC/gigaflair-sip2-json.git
-cd gigaflair-sip2-json
+git clone https://github.com/GigaFlair-LLC/gigaflair-sip2-bridge.git
+cd gigaflair-sip2-bridge
 npm install
 
 # Copy and configure your local environment
@@ -76,7 +76,7 @@ npm run mock:lms
 
 ## Making a Contribution
 
-1. [Fork the repository](https://github.com/GigaFlair-LLC/gigaflair-sip2-json/fork) and create a branch from `main`:
+1. [Fork the repository](https://github.com/GigaFlair-LLC/gigaflair-sip2-bridge/fork) and create a branch from `main`:
    ```bash
    git checkout -b feat/my-feature
    # or
