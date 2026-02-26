@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="night">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Setup Wizard — GigaFlair SIP2 Bridge</title>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com/3.4.1"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@800&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --gf-primary: #4F46E5;
+            --gf-primary-dark: #3730C4;
+            --gf-glow: rgba(79, 70, 229, 0.26);
+            --gf-white: #F8FAFC;
+        }
+
+        [data-theme="night"] {
+            --p: 244 73% 58%;
+            --pf: 244 73% 48%;
+            --pc: 0 0% 100%;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0d1117;
+            background-image:
+                radial-gradient(ellipse at 75% 10%, rgba(79, 70, 229, 0.15) 0%, transparent 55%),
+                radial-gradient(ellipse at 15% 90%, rgba(79, 70, 229, 0.08) 0%, transparent 50%);
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.016) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.016) 1px, transparent 1px);
+            background-size: 48px 48px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* GigaFlair Wordmark */
+        .gf-wordmark {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 800;
+            font-size: 2.25rem;
+            line-height: 1;
+            letter-spacing: -0.01em;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .gf-wordmark .giga {
+            color: var(--gf-white);
+            -webkit-text-stroke: 0.6px rgba(0, 0, 0, 0.35);
+            paint-order: stroke fill;
+        }
+
+        .gf-wordmark .flair {
+            color: var(--gf-primary);
+            -webkit-text-stroke: 0.6px rgba(0, 0, 0, 0.25);
+            paint-order: stroke fill;
+        }
+
+        .page-wrap {
+            position: relative;
+            z-index: 1;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1rem 1.5rem;
+            gap: 1.75rem;
+        }
+
+        .setup-card {
+            background: rgba(18, 22, 38, 0.82);
+            backdrop-filter: blur(24px) saturate(180%);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            box-shadow:
+                0 0 0 1px rgba(79, 70, 229, 0.08),
+                0 32px 96px rgba(0, 0, 0, 0.6),
+                inset 0 1px 0 rgba(255, 255, 255, 0.04);
+            border-radius: 1.5rem;
+        }
+
+        .btn-gigaflair {
+            background: linear-gradient(135deg, var(--gf-primary) 0%, #6366f1 100%);
+            border: none;
+            color: #fff !important;
+            font-weight: 600;
+            box-shadow: 0 4px 20px var(--gf-glow);
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-gigaflair::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, transparent 60%);
+            pointer-events: none;
+        }
+
+        .btn-gigaflair:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 32px var(--gf-glow);
+            filter: brightness(1.08);
+        }
+
+        .btn-gigaflair:disabled {
+            opacity: 0.5;
+            transform: none;
+            cursor: not-allowed;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* SVG Safety */
+        svg {
+            width: 20px !important;
+            height: 20px !important;
+            min-width: 20px !important;
+            min-height: 20px !important;
+            flex-shrink: 0;
+            display: inline-block;
+        }
+
+        .alert-glass {
+            background: rgba(79, 70, 229, 0.1);
+            border: 1px solid rgba(79, 70, 229, 0.2);
+            color: #a5b4fc;
+            backdrop-filter: blur(8px);
+        }
+
+        .step-content {
+            display: none;
+        }
+
+        .step-content.active {
+            display: block;
+        }
+
+        .gf-footer {
+            font-size: 11px;
+            letter-spacing: 0.04em;
+            color: rgba(255, 255, 255, 0.18);
+            font-weight: 500;
+        }
+
+    </style>
+</head>
+
+<body>
+    <div class="page-wrap">
+        <!-- GigaFlair Wordmark -->
+        <div class="flex flex-col items-center gap-2">
+            <div class="gf-wordmark">
+                <span class="giga">Giga</span><span class="flair">Flair</span>
+            </div>
+            <div class="text-xs" style="color:rgba(255,255,255,0.3);letter-spacing:0.12em;text-transform:uppercase;">
+                Setup Wizard</div>
+        </div>
+
+        <!-- Setup Card -->
+        <div class="setup-card w-full max-w-2xl">
+            <div class="card-body gap-6 p-8">
+
+                <ul class="steps steps-horizontal w-full mb-4">
+                    <li id="step-1-indicator" class="step step-primary">LMS Setup</li>
+                    <li id="step-2-indicator" class="step">Verify</li>
+                </ul>
+
+                <div id="setup-form">
+                    <!-- STEP 1: LMS CONNECTION -->
+                    <div id="step-1" class="step-content active animate-in fade-in duration-300">
+                        <h2 class="text-xl font-semibold mb-4 text-primary">Step 1: LMS Connection Setup</h2>
+
+                        <!-- ILS VENDOR PRESET -->
+                        <div class="form-control w-full mb-5">
+                            <label class="label font-medium"><span class="label-text">ILS Software</span></label>
+                            <select id="ilsVendor" class="select select-bordered w-full"
+                                onchange="onVendorChange(this.value)">
+                                <option value="">Select your library software...</option>
+                                <option value="alma">Ex Libris Alma</option>
+                                <option value="sierra">Innovative Sierra</option>
+                                <option value="polaris">Innovative Polaris</option>
+                                <option value="symphony">SirsiDynix Symphony</option>
+                                <option value="horizon">SirsiDynix Horizon</option>
+                                <option value="koha">Koha (open source)</option>
+                                <option value="evergreen">Evergreen (open source)</option>
+                                <option value="destiny">Follett Destiny</option>
+                                <option value="worldshare">OCLC WorldShare</option>
+                                <option value="other">Other / Unknown</option>
+                            </select>
+                            <label class="label"><span class="label-text-alt text-base-content/50">Applies known SIP2
+                                    compatibility settings for your ILS automatically</span></label>
+                            <div id="vendorNote"
+                                class="hidden text-xs bg-base-200 border border-base-content/10 rounded-lg px-3 py-2 text-base-content/70">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="form-control w-full">
+                                <label class="label font-medium"><span class="label-text">LMS IP /
+                                        Hostname</span></label>
+                                <input type="text" id="lmsHost" placeholder="10.0.0.5"
+                                    class="input input-bordered w-full" onfocus="this.select()" />
+                                <label class="label"><span class="label-text-alt text-base-content/50">Hostname of your
+                                        ILS
+                                        server (Polaris, Koha, etc)</span></label>
+                            </div>
+                            <div class="form-control w-full">
+                                <label class="label font-medium"><span class="label-text">Port</span></label>
+                                <input type="number" id="lmsPort" placeholder="6001" value="6001"
+                                    class="input input-bordered w-full" onfocus="this.select()" />
+                                <label class="label"><span class="label-text-alt text-base-content/50">Standard SIP2
+                                        port is
+                                        6001</span></label>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+                            <div class="form-control w-full">
+                                <label class="label font-medium"><span class="label-text">SIP2 User</span></label>
+                                <input type="text" id="sip2User" placeholder="bridge_user"
+                                    class="input input-bordered w-full" onfocus="this.select()" />
+                                <label class="label"><span class="label-text-alt text-base-content/50">Username for SIP
+                                        login</span></label>
+                            </div>
+                            <div class="form-control w-full">
+                                <label class="label font-medium"><span class="label-text">SIP2 Password</span></label>
+                                <input type="password" id="sip2Password" placeholder="••••••••"
+                                    class="input input-bordered w-full" onfocus="this.select()" />
+                                <label class="label"><span class="label-text-alt text-base-content/50">Encrypts
+                                        automatically on save</span></label>
+                            </div>
+                        </div>
+
+                        <div class="form-control w-full mt-2">
+                            <label class="label font-medium"><span class="label-text">Location Code</span></label>
+                            <input type="text" id="sip2Location" placeholder="MAIN"
+                                class="input input-bordered w-full" />
+                            <label class="label"><span class="label-text-alt text-base-content/50">Optional
+                                    branch/terminal
+                                    identifier</span></label>
+                        </div>
+                    </div>
+
+                    <!-- STEP 2: SUMMARY & TEST -->
+                    <div id="step-2" class="step-content animate-in fade-in duration-300">
+                        <h2 class="text-xl font-semibold mb-4 text-primary">Step 2: Summary & Verification</h2>
+
+                        <div class="bg-base-200 p-4 rounded-lg border border-base-content/5 space-y-3 mb-6">
+                            <div class="flex justify-between border-b border-base-content/10 pb-2">
+                                <span class="text-base-content/60">Administrator</span>
+                                <span class="font-medium text-success italic">Admin Account Created</span>
+                            </div>
+                            <div class="flex justify-between border-b border-base-content/10 pb-2">
+                                <span class="text-base-content/60">ILS Software</span>
+                                <span id="summary-vendor" class="font-medium text-secondary">Not specified</span>
+                            </div>
+                            <div class="flex justify-between border-b border-base-content/10 pb-2">
+                                <span class="text-base-content/60">LMS Endpoint</span>
+                                <span id="summary-endpoint" class="font-medium text-primary">127.0.0.1:6001</span>
+                            </div>
+                            <div class="flex justify-between border-b border-base-content/10 pb-2">
+                                <span class="text-base-content/60">SIP2 Account</span>
+                                <span id="summary-user" class="font-medium">...</span>
+                            </div>
+                            <div class="flex justify-between italic text-xs text-base-content/40">
+                                Encryption Active (AES-256-GCM)
+                            </div>
+                        </div>
+
+                        <div class="bg-warning/10 border border-warning/20 rounded-xl p-5 mb-6">
+                            <div class="flex items-start gap-3">
+                                <div class="text-warning mt-1">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                                        viewBox="0 0 16 16">
+                                        <path
+                                            d="M3.5 11.5a3.5 3.5 0 1 1 3.163-5H14L15.5 8 14 9.5l-1-1-1 1-1-1-1 1-1-1-1 1H6.663a3.5 3.5 0 0 1-3.163 2zM2.5 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2z" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p class="font-semibold text-warning text-sm">Download Your Recovery Key</p>
+                                    <p class="text-xs text-base-content/70 mt-1">
+                                        Keep this key safe. It is required to decrypt your settings if you move this
+                                        Bridge to a new server.
+                                    </p>
+                                </div>
+                            </div>
+                            <button onclick="downloadRecoveryKey()"
+                                class="btn btn-sm btn-warning btn-outline mt-4 w-full">
+                                ⬇ Download recovery-key.txt
+                            </button>
+                        </div>
+
+                        <div class="flex flex-col gap-4">
+                            <button id="testBtn" onclick="testConnection()"
+                                class="btn btn-outline btn-secondary w-full">
+                                <span id="testLoader" class="loading loading-spinner hidden"></span>
+                                Test LMS Connection
+                            </button>
+                        </div>
+
+                        <div id="testResult" class="mt-4 hidden">
+                            <div class="alert shadow-sm py-2">
+                                <span id="testMsg" class="text-sm"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-actions justify-between mt-8">
+                    <button id="prevBtn" onclick="prevStep()" class="btn btn-ghost">Back</button>
+                    <button id="nextBtn" onclick="nextStep()" class="btn btn-gigaflair px-8">Next →</button>
+                    <button id="finishBtn" onclick="completeSetup()" class="btn btn-gigaflair px-8 hidden">
+                        <span id="finishLoader" class="loading loading-spinner hidden"></span>
+                        Launch Bridge
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="gf-footer text-center">
+            © 2026 GigaFlair LLC
+        </div>
+
+    </div>
+
+    <!-- SUCCESS MODAL -->
+    <dialog id="success_modal" class="modal">
+        <div class="modal-box text-center bg-base-100 border border-success/20">
+            <div class="flex justify-center mb-4">
+                <div class="h-16 w-16 bg-success/20 text-success rounded-full flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                    </svg>
+                </div>
+            </div>
+            <h3 class="font-bold text-2xl">Setup Complete!</h3>
+            <p class="py-4 text-base-content/70">Your GigaFlair Bridge is now configured and secured.<br>Redirecting to
+                dashboard...</p>
+            <div class="p-4 bg-base-200 rounded-lg text-left text-sm font-mono mt-4">
+                <p class="text-success font-bold mb-1">Generated API Key:</p>
+                <div id="finalApiKey" class="break-all select-all text-secondary"></div>
+                <p class="mt-3 text-xs text-base-content/40 italic">Save this key! All API requests require the <code
+                        class="bg-base-300 px-1">x-api-key</code> header.</p>
+            </div>
+        </div>
+    </dialog>
+
+    <script>
+        // ILS vendor presets: maps ILS software to known SIP2 compatibility flags.
+        // These are server-side (ILS) quirks — unrelated to hardware vendor (Bibliotheca, 3M, etc.)
+        // which are SIP2 clients, just like this bridge.
+        const VENDOR_PRESETS = {
+            'alma': { label: 'Ex Libris Alma', profile: { name: 'Ex Libris Alma', postLoginSCStatus: true } },
+            'sierra': { label: 'Innovative Sierra', profile: { name: 'Innovative Sierra' } },
+            'polaris': { label: 'Innovative Polaris', profile: { name: 'Innovative Polaris' } },
+            'symphony': { label: 'SirsiDynix Symphony', profile: { name: 'SirsiDynix Symphony' } },
+            'horizon': { label: 'SirsiDynix Horizon', profile: { name: 'SirsiDynix Horizon', checksumRequired: false } },
+            'koha': { label: 'Koha', profile: { name: 'Koha' } },
+            'evergreen': { label: 'Evergreen', profile: { name: 'Evergreen' } },
+            'destiny': { label: 'Follett Destiny', profile: { name: 'Follett Destiny' } },
+            'worldshare': { label: 'OCLC WorldShare', profile: { name: 'OCLC WorldShare' } },
+            'other': { label: 'Other / Unknown', profile: {} },
+        };
+
+        function onVendorChange(value) {
+            const preset = VENDOR_PRESETS[value];
+            const noteEl = document.getElementById('vendorNote');
+            if (!preset) {
+                formData.vendorProfile = undefined;
+                noteEl.classList.add('hidden');
+                document.getElementById('summary-vendor').innerText = 'Not specified';
+                return;
+            }
+            formData.vendorProfile = Object.keys(preset.profile).length > 0 ? preset.profile : undefined;
+            document.getElementById('summary-vendor').innerText = preset.label;
+
+            const notes = [];
+            if (preset.profile.postLoginSCStatus) notes.push('⚡ Sends SC Status after login (required by Alma)');
+            if (preset.profile.checksumRequired === false) notes.push('⚠ Checksum enforcement relaxed (some legacy Horizon installs omit checksums)');
+            if (notes.length === 0) notes.push('✓ Standard SIP2 — no special compatibility flags needed');
+            noteEl.textContent = notes.join('  ·  ');
+            noteEl.classList.remove('hidden');
+        }
+
+        let currentStep = 1;
+        const totalSteps = 2;
+        const formData = {
+            lmsHost: '',
+            lmsPort: 6001,
+            sip2User: '',
+            sip2Password: '',
+            sip2Location: '',
+            vendorProfile: undefined
+        };
+        let csrfToken = '';
+
+        async function getCsrfToken() {
+            try {
+                const res = await fetch('/api/admin/csrf-token');
+                const data = await res.json();
+                csrfToken = data.token;
+            } catch (err) { }
+        }
+
+        // Initialize CSRF and UI
+        async function init() {
+            await getCsrfToken();
+            updateUI();
+        }
+        init();
+
+        function updateUI() {
+            // Content visibility
+            document.querySelectorAll('.step-content').forEach(el => el.classList.remove('active'));
+            document.getElementById(`step-${currentStep}`).classList.add('active');
+
+            // Indicators
+            document.querySelectorAll('.step').forEach((el, idx) => {
+                if (idx < currentStep) el.classList.add('step-primary');
+                else el.classList.remove('step-primary');
+            });
+
+            // Navigation Buttons
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const finishBtn = document.getElementById('finishBtn');
+
+            if (currentStep === 1) {
+                prevBtn.classList.add('hidden');
+            } else {
+                prevBtn.classList.remove('hidden');
+            }
+
+            if (currentStep === totalSteps) {
+                nextBtn.classList.add('hidden');
+                finishBtn.classList.remove('hidden');
+                updateSummary();
+            } else {
+                nextBtn.classList.remove('hidden');
+                finishBtn.classList.add('hidden');
+            }
+
+            nextBtn.disabled = false;
+        }
+
+        function nextStep() {
+            if (currentStep === 1) {
+                formData.lmsHost = document.getElementById('lmsHost').value;
+                formData.lmsPort = document.getElementById('lmsPort').value;
+                formData.sip2User = document.getElementById('sip2User').value;
+                formData.sip2Password = document.getElementById('sip2Password').value;
+                formData.sip2Location = document.getElementById('sip2Location').value;
+
+                if (!formData.lmsHost || !formData.lmsPort) {
+                    alert('LMS Host and Port are required.');
+                    return;
+                }
+            }
+
+            if (currentStep < totalSteps) {
+                currentStep++;
+                updateUI();
+            }
+        }
+
+        function prevStep() {
+            if (currentStep > 1) {
+                currentStep--;
+                updateUI();
+            }
+        }
+
+        async function downloadRecoveryKey() {
+            try {
+                const res = await fetch('/api/setup/recovery-key');
+                const data = await res.json();
+                if (data.success && data.key) {
+                    const blob = new Blob([data.key], { type: 'text/plain' });
+                    const a = document.createElement('a');
+                    a.href = URL.createObjectURL(blob);
+                    a.download = 'gigaflair-recovery-key.txt';
+                    a.click();
+                } else {
+                    alert('Could not retrieve recovery key. Please try again.');
+                }
+            } catch (err) {
+                alert('Connection error. Could not retrieve recovery key.');
+            }
+        }
+
+        function updateSummary() {
+            document.getElementById('summary-endpoint').innerText = `${formData.lmsHost}:${formData.lmsPort}`;
+            document.getElementById('summary-user').innerText = formData.sip2User || 'No Authentication';
+            const vendorVal = document.getElementById('ilsVendor')?.value;
+            document.getElementById('summary-vendor').innerText =
+                vendorVal && VENDOR_PRESETS[vendorVal] ? VENDOR_PRESETS[vendorVal].label : 'Not specified';
+        }
+
+        async function testConnection() {
+            const btn = document.getElementById('testBtn');
+            const loader = document.getElementById('testLoader');
+            const resultBox = document.getElementById('testResult');
+            const resMsg = document.getElementById('testMsg');
+
+            btn.disabled = true;
+            loader.classList.remove('hidden');
+            resultBox.classList.add('hidden');
+
+            try {
+                const response = await fetch('/api/setup/test-connection', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-csrf-token': csrfToken
+                    },
+                    body: JSON.stringify({
+                        lmsHost: formData.lmsHost,
+                        lmsPort: parseInt(formData.lmsPort),
+                        sip2User: formData.sip2User,
+                        sip2Password: formData.sip2Password,
+                        sip2Location: formData.sip2Location
+                    })
+                });
+
+                const data = await response.json();
+                resultBox.classList.remove('hidden');
+                if (data.success) {
+                    resultBox.querySelector('.alert').classList.add('alert-success');
+                    resultBox.querySelector('.alert').classList.remove('alert-error');
+                    resMsg.innerText = 'Success! LMS connection verified.';
+                } else {
+                    resultBox.querySelector('.alert').classList.add('alert-error');
+                    resultBox.querySelector('.alert').classList.remove('alert-success');
+                    resMsg.innerText = `Failed: ${data.message}`;
+                }
+            } catch (err) {
+                resultBox.classList.remove('hidden');
+                resultBox.querySelector('.alert').classList.add('alert-error');
+                resMsg.innerText = 'Error: Could not reach setup server.';
+            } finally {
+                btn.disabled = false;
+                loader.classList.add('hidden');
+            }
+        }
+
+        async function completeSetup() {
+            const btn = document.getElementById('finishBtn');
+            const loader = document.getElementById('finishLoader');
+
+            btn.disabled = true;
+            loader.classList.remove('hidden');
+
+            try {
+                const response = await fetch('/api/setup/initialize', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-csrf-token': csrfToken
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    document.getElementById('finalApiKey').innerText = data.apiKey;
+                    success_modal.showModal();
+                    setTimeout(() => {
+                        window.location.href = '/';
+                    }, 8000);
+                } else {
+                    alert(`Initialization failed: ${data.message}`);
+                    btn.disabled = false;
+                    loader.classList.add('hidden');
+                }
+            } catch (err) {
+                alert('Connection error during initialization.');
+                btn.disabled = false;
+                loader.classList.add('hidden');
+            }
+        }
+    </script>
+</body>
+
+</html>

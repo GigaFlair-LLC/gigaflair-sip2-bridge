@@ -1,0 +1,63 @@
+# NOTE: All API keys and credentials in this file are example/test values only.
+# Replace them with your actual values before use.
+
+### Health Check
+GET http://localhost:3100/health
+
+### Patron Status - Valid barcode
+POST http://localhost:3100/api/v1/patron/status
+Content-Type: application/json
+x-api-key: bridge-test-key
+
+{
+    "branchId": "main",
+    "patronBarcode": "987654321"
+}
+
+### Patron Status - Missing barcode (expect 400)
+POST http://localhost:3100/api/v1/patron/status
+Content-Type: application/json
+x-api-key: bridge-test-key
+
+{
+    "branchId": "main"
+}
+
+### Auth - Missing API key (expect 401)
+POST http://localhost:3100/api/v1/patron/status
+Content-Type: application/json
+
+{
+    "patronBarcode": "987654321"
+}
+
+### Auth - Bad API key (expect 401)
+POST http://localhost:3100/api/v1/patron/status
+Content-Type: application/json
+x-api-key: wrong-key
+
+{
+    "patronBarcode": "987654321"
+}
+
+### Admin Login
+POST http://localhost:3100/api/admin/login
+Content-Type: application/json
+
+{
+    "username": "admin",
+    "password": "your-admin-password"
+}
+
+### Circuit Breaker State
+GET http://localhost:3100/api/admin/status
+
+### SIP2 Injection Attempt - should be sanitized
+POST http://localhost:3100/api/v1/patron/status
+Content-Type: application/json
+x-api-key: bridge-test-key
+
+{
+    "branchId": "main",
+    "patronBarcode": "123|AA9999"
+}

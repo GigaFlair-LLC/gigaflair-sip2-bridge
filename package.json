@@ -1,0 +1,43 @@
+{
+  "name": "sip2-json",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch --ignore data src/server.ts",
+    "build": "tsc",
+    "start": "node dist/bin/start.js",
+    "mock:lms": "tsx watch src/mock-lms.ts",
+    "test": "vitest run",
+    "test:watch": "vitest --reporter=verbose",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest run --coverage",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src"
+  },
+  "dependencies": {
+    "@fastify/cookie": "^11.0.2",
+    "@fastify/csrf-protection": "^7.1.0",
+    "@fastify/env": "^5.0.3",
+    "@fastify/helmet": "^13.0.2",
+    "@fastify/rate-limit": "^10.3.0",
+    "@fastify/session": "^11.1.1",
+    "@fastify/static": "^9.0.0",
+    "argon2": "^0.44.0",
+    "fastify": "^5.2.1",
+    "fastify-plugin": "^5.0.1",
+    "unidecode": "^1.1.0",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/eslint__js": "^8.42.3",
+    "@types/node": "^22.13.4",
+    "@types/unidecode": "^1.1.0",
+    "eslint": "^10.0.1",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3",
+    "typescript-eslint": "^8.56.0",
+    "vitest": "^3.0.5"
+  }
+}

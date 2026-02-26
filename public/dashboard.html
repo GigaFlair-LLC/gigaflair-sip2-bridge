@@ -1,0 +1,1205 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="night">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GigaFlair SIP2 Bridge — Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com/3.4.1"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@800&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --gf-primary: #6366f1;
+            --gf-bg-dark: #0d1117;
+            --gf-sidebar: #12151e;
+            --gf-card: rgba(18, 22, 38, 0.88);
+            --gf-border: rgba(255, 255, 255, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body,
+        html {
+            height: 100vh !important;
+            width: 100vw !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            overflow: hidden !important;
+            background: var(--gf-bg-dark);
+            color: #f1f5f9;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image:
+                radial-gradient(ellipse at 70% 15%, rgba(99, 102, 241, 0.1) 0%, transparent 60%),
+                radial-gradient(ellipse at 20% 85%, rgba(99, 102, 241, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        #dashboard-app {
+            display: flex !important;
+            height: 100vh !important;
+            width: 100vw !important;
+            position: relative;
+            z-index: 10;
+        }
+
+        aside {
+            width: 260px !important;
+            background: var(--gf-sidebar) !important;
+            border-right: 1px solid var(--gf-border) !important;
+            display: flex !important;
+            flex-direction: column !important;
+            flex-shrink: 0 !important;
+            z-index: 20;
+        }
+
+        main {
+            flex: 1 !important;
+            height: 100vh !important;
+            overflow-y: auto !important;
+            padding: 2.5rem !important;
+            position: relative;
+            z-index: 15;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        svg {
+            width: 18px !important;
+            height: 18px !important;
+            min-width: 18px !important;
+            min-height: 18px !important;
+            flex-shrink: 0 !important;
+            display: inline-block !important;
+            margin-right: 12px !important;
+            vertical-align: middle;
+        }
+
+        .nav-link {
+            display: flex !important;
+            align-items: center !important;
+            width: calc(100% - 1.5rem) !important;
+            margin: 0.25rem 0.75rem !important;
+            padding: 10px 14px !important;
+            border-radius: 8px !important;
+            color: rgba(255, 255, 255, 0.5) !important;
+            text-decoration: none !important;
+            font-size: 14px !important;
+            font-weight: 500 !important;
+            border: none !important;
+            background: transparent !important;
+            cursor: pointer !important;
+            transition: all 0.2s;
+        }
+
+        .nav-link:hover {
+            color: white !important;
+            background: rgba(255, 255, 255, 0.04) !important;
+        }
+
+        .nav-link.active {
+            color: #a5b4fc !important;
+            background: rgba(99, 102, 241, 0.15) !important;
+        }
+
+        .glass-card {
+            background: var(--gf-card);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--gf-border);
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        .view-section {
+            display: none;
+        }
+
+        .view-section.active {
+            display: block !important;
+        }
+
+        /* Branding */
+        .gf-wordmark {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 800;
+            font-size: 2.25rem;
+            line-height: 1;
+            letter-spacing: -0.02em;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .gf-wordmark .giga {
+            color: #f8fafc;
+            -webkit-text-stroke: 0.6px rgba(0, 0, 0, 0.35);
+            paint-order: stroke fill;
+        }
+
+        .gf-wordmark .flair {
+            color: #6366f1;
+            -webkit-text-stroke: 0.6px rgba(0, 0, 0, 0.25);
+            paint-order: stroke fill;
+        }
+
+        .sidebar-header {
+            padding: 1.75rem 1.5rem 1.25rem !important;
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 0.5rem !important;
+        }
+
+        .sidebar-wordmark {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 800;
+            font-size: 1.25rem;
+            line-height: 1;
+            letter-spacing: -0.01em;
+            display: flex;
+            align-items: center;
+        }
+
+        .sidebar-wordmark .giga {
+            color: #f8fafc;
+            -webkit-text-stroke: 0.4px rgba(0, 0, 0, 0.35);
+        }
+
+        .sidebar-wordmark .flair {
+            color: #6366f1;
+            -webkit-text-stroke: 0.4px rgba(0, 0, 0, 0.25);
+        }
+
+        .sidebar-tagline {
+            font-size: 9px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: rgba(255, 255, 255, 0.25);
+        }
+
+        .btn-indigo {
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%) !important;
+            border: none !important;
+            color: white !important;
+            font-weight: 600 !important;
+            transition: all 0.2s !important;
+        }
+
+        .btn-indigo:hover {
+            transform: translateY(-1px) !important;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4) !important;
+            filter: brightness(1.1) !important;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+        }
+    </style>
+</head>
+
+<body class="bg-[#0d1117] text-white">
+
+    <!-- LOGIN SCREEN -->
+    <div id="login-screen" class="min-h-screen flex items-center justify-center p-4 relative z-10 hidden">
+        <div class="flex flex-col items-center gap-8 w-full max-w-md">
+            <!-- GigaFlair Wordmark -->
+            <div class="flex flex-col items-center gap-2">
+                <div class="gf-wordmark">
+                    <span class="giga">Giga</span><span class="flair">Flair</span>
+                </div>
+                <div class="text-xs font-medium uppercase tracking-[0.2em] text-white/30">SIP2 Bridge Appliance</div>
+            </div>
+
+            <div class="glass-card rounded-2xl w-full p-10">
+                <div class="text-center mb-8">
+                    <h1 class="text-2xl font-bold text-white tracking-tight">Bridge Login</h1>
+                    <p class="text-sm mt-2 text-white/40">Secure administrative access</p>
+                </div>
+
+                <div class="space-y-5">
+                    <div>
+                        <label class="block text-sm font-semibold mb-1.5 text-white/60">Username</label>
+                        <input type="text" id="login-username" placeholder="admin"
+                            class="input input-bordered w-full bg-white/5 border-white/10 text-white focus:border-primary focus:ring-4 focus:ring-primary/20 transition-all"
+                            autofocus />
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold mb-1.5 text-white/60">Password</label>
+                        <input type="password" id="login-password" placeholder="••••••••"
+                            class="input input-bordered w-full bg-white/5 border-white/10 text-white focus:border-primary focus:ring-4 focus:ring-primary/20 transition-all" />
+                    </div>
+
+                    <p id="login-error"
+                        class="text-error text-center text-sm mt-4 hidden animate-in fade-in duration-200"></p>
+
+                    <button onclick="login()" id="login-btn"
+                        class="btn btn-indigo w-full h-12 rounded-xl mt-2 shadow-lg transition-all font-bold">
+                        <span id="login-loader" class="loading loading-spinner loading-sm hidden"></span>
+                        Login →
+                    </button>
+                </div>
+            </div>
+
+            <div class="text-[11px] font-medium uppercase tracking-widest text-white/20">© 2026 GigaFlair LLC</div>
+        </div>
+    </div>
+
+    <!-- MAIN DASHBOARD -->
+    <div id="dashboard-app" class="flex h-screen overflow-hidden relative z-20 hidden">
+
+        <!-- SIDEBAR -->
+        <aside class="sidebar-aside">
+            <div class="sidebar-header">
+                <div class="sidebar-wordmark">
+                    <span class="giga">Giga</span><span class="flair">Flair</span>
+                </div>
+                <div class="sidebar-tagline">SIP2 Bridge Appliance</div>
+            </div>
+
+            <nav class="p-4 flex-1 space-y-1">
+                <button onclick="showSection('overview')" id="nav-overview"
+                    class="nav-link btn btn-ghost btn-block justify-start gap-3 active">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" class="h-5 w-5" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
+                        <path
+                            d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                    </svg>
+                    Overview
+                </button>
+                <button onclick="showSection('lms')" id="nav-lms"
+                    class="nav-link btn btn-ghost btn-block justify-start gap-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" class="h-5 w-5" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
+                        <path
+                            d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                    </svg>
+                    LMS Settings
+                </button>
+                <button onclick="showSection('users')" id="nav-users"
+                    class="nav-link btn btn-ghost btn-block justify-start gap-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" class="h-5 w-5" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
+                        <path
+                            d="M12 4.354l1.1 1.1a4 4 0 11-5.656 0l1.1-1.1m0 0a4 4 0 105.656 0l-1.1-1.1m-5.656 0l1.1 1.1a4 4 0 105.656 0l-1.1-1.1M12 12c2.21 0 4 1.79 4 4v2H8v-2c0-2.21 1.79-4 4-4z" />
+                    </svg>
+                    Users
+                </button>
+                <button onclick="showSection('api')" id="nav-api"
+                    class="nav-link btn btn-ghost btn-block justify-start gap-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" class="h-5 w-5" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
+                        <path
+                            d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+                    </svg>
+                    API Keys
+                </button>
+                <button onclick="showSection('logs')" id="nav-logs"
+                    class="nav-link btn btn-ghost btn-block justify-start gap-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" class="h-5 w-5" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
+                        <path
+                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    Logs
+                </button>
+                <button onclick="showSection('data')" id="nav-data"
+                    class="nav-link btn btn-ghost btn-block justify-start gap-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" class="h-5 w-5" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" />
+                    </svg>
+                    Data & Reporting
+                </button>
+                <button onclick="showSection('system')" id="nav-system"
+                    class="nav-link btn btn-ghost btn-block justify-start gap-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" class="h-5 w-5" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    System Settings
+                </button>
+            </nav>
+
+            <div class="p-4 border-t border-base-content/5 space-y-2">
+                <div class="flex items-center gap-2 px-2 py-1">
+                    <div class="w-2 h-2 rounded-full bg-success"></div>
+                    <span class="text-xs font-medium opacity-50">Admin Session</span>
+                </div>
+                <button onclick="logout()" class="btn btn-ghost btn-sm btn-block justify-start text-error">
+                    Logout
+                </button>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <main id="main-content" class="flex-1 overflow-y-auto bg-base-300 p-8">
+
+            <!-- OVERVIEW SECTION -->
+            <section id="view-overview"
+                class="view-section active animate-in fade-in slide-in-from-bottom-2 duration-300">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-4">
+                    <div>
+                        <h2 class="text-3xl font-bold">Bridge Overview</h2>
+                        <p class="text-base-content/60">Real-time status of your SIP2 translation engine</p>
+                    </div>
+                    <div class="flex items-center gap-4 w-full md:w-auto">
+                        <div id="health-widget"
+                            class="bg-base-100 px-4 py-2 rounded-lg border border-base-content/10 flex items-center gap-3 shadow-sm flex-1 md:flex-initial">
+                            <div id="health-indicator" class="w-3 h-3 rounded-full bg-neutral animate-pulse shrink-0">
+                            </div>
+                            <div>
+                                <div class="flex items-center gap-2">
+                                    <span id="health-summary"
+                                        class="text-xs font-bold uppercase tracking-wider opacity-60">Checking
+                                        System...</span>
+                                    <button onclick="updateHealth()"
+                                        class="btn btn-ghost btn-xs btn-circle p-0 h-4 w-4 min-h-0">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" class="h-3 w-3"
+                                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                                        </svg>
+                                    </button>
+                                </div>
+                                <div id="health-details"
+                                    class="text-[10px] opacity-40 leading-none mt-1 whitespace-nowrap">Checking status...</div>
+                            </div>
+                        </div>
+                        <button onclick="reconnect()" class="btn btn-primary">Manual Reconnect</button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div class="card bg-base-100 shadow-sm border border-base-content/5">
+                        <div class="card-body">
+                            <span class="label-text-alt uppercase font-bold text-base-content/40 tracking-wider">SIP2
+                                Connection</span>
+                            <div class="flex items-center gap-3 mt-2">
+                                <span id="status-badge" class="badge badge-lg border-none font-bold">Loading...</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card bg-base-100 shadow-sm border border-base-content/5">
+                        <div class="card-body">
+                            <span class="label-text-alt uppercase font-bold text-base-content/40 tracking-wider">System
+                                Uptime</span>
+                            <div id="uptime-display" class="text-2xl font-mono font-bold mt-2">00:00:00</div>
+                        </div>
+                    </div>
+                    <div class="card bg-base-100 shadow-sm border border-base-content/5">
+                        <div class="card-body">
+                            <span class="label-text-alt uppercase font-bold text-base-content/40 tracking-wider">API
+                                Requests (Session)</span>
+                            <div id="request-count" class="text-2xl font-mono font-bold mt-2">0</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card bg-base-100 shadow-sm border border-base-content/5">
+                    <div class="card-body">
+                        <h3 class="font-bold mb-4">LMS Endpoint Summary</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                            <div class="flex justify-between p-3 bg-base-200 rounded-lg">
+                                <span class="opacity-60">Host</span>
+                                <span id="summary-host" class="font-mono">...</span>
+                            </div>
+                            <div class="flex justify-between p-3 bg-base-200 rounded-lg">
+                                <span class="opacity-60">Port</span>
+                                <span id="summary-port" class="font-mono">...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- LMS SETTINGS SECTION -->
+            <section id="view-lms" class="view-section animate-in fade-in slide-in-from-bottom-2 duration-300">
+                <h2 class="text-3xl font-bold mb-8">LMS Connection Settings</h2>
+
+                <div class="card bg-base-100 shadow-sm border border-base-content/5 max-w-2xl">
+                    <div class="card-body gap-6">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="form-control">
+                                <label class="label"><span class="label-text font-medium">LMS Host / IP</span></label>
+                                <input type="text" id="setting-host" class="input input-bordered" />
+                                <label class="label"><span class="label-text-alt opacity-50">IP address of your Polaris
+                                        or Koha server.</span></label>
+                            </div>
+                            <div class="form-control">
+                                <label class="label"><span class="label-text font-medium">LMS Port</span></label>
+                                <input type="number" id="setting-port" class="input input-bordered" />
+                                <label class="label"><span class="label-text-alt opacity-50">Standard SIP2 port is
+                                        usually 6001.</span></label>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="form-control">
+                                <label class="label"><span class="label-text font-medium">SIP2 Username</span></label>
+                                <input type="text" id="setting-user" class="input input-bordered" />
+                                <label class="label"><span class="label-text-alt opacity-50">Account for ILS
+                                        authentication.</span></label>
+                            </div>
+                            <div class="form-control">
+                                <label class="label"><span class="label-text font-medium">SIP2 Password</span></label>
+                                <input type="password" id="setting-pass" class="input input-bordered"
+                                    placeholder="••••••••" />
+                                <label class="label"><span class="label-text-alt opacity-50">Write-only. Encrypts on
+                                        save.</span></label>
+                            </div>
+                        </div>
+
+                        <div class="form-control">
+                            <label class="label"><span class="label-text font-medium">Location Code (CP)</span></label>
+                            <input type="text" id="setting-location" class="input input-bordered" />
+                            <label class="label"><span class="label-text-alt opacity-50">Optional branch or terminal
+                                    identifier.</span></label>
+                        </div>
+
+                        <div class="flex gap-3 mt-4">
+                            <button onclick="saveLmsSettings()" class="btn btn-primary flex-1">Save
+                                Configuration</button>
+                            <button onclick="testLmsSettings()" class="btn btn-outline btn-secondary px-8">Test
+                                Connection</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- USERS SECTION -->
+            <section id="view-users" class="view-section animate-in fade-in slide-in-from-bottom-2 duration-300">
+                <div class="flex justify-between items-end mb-8">
+                    <div>
+                        <h2 class="text-3xl font-bold">User Management</h2>
+                        <p class="text-base-content/60">Configure administrator and viewer accounts</p>
+                    </div>
+                    <button onclick="user_modal.showModal()" class="btn btn-primary">Add New User</button>
+                </div>
+
+                <div class="card bg-base-100 shadow-sm border border-base-content/5">
+                    <div class="overflow-x-auto">
+                        <table class="table table-zebra">
+                            <thead>
+                                <tr>
+                                    <th>Username</th>
+                                    <th>Role</th>
+                                    <th>Security</th>
+                                    <th class="text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="user-table-body">
+                                <!-- Users populated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- API KEYS SECTION -->
+            <section id="view-api" class="view-section animate-in fade-in slide-in-from-bottom-2 duration-300">
+                <h2 class="text-3xl font-bold mb-8">Bridge API Keys</h2>
+
+                <div class="card bg-base-100 shadow-sm border border-base-content/5 max-w-2xl">
+                    <div class="card-body">
+                        <h3 class="font-bold mb-2">Bridge Access Key</h3>
+                        <p class="text-sm text-base-content/60 mb-6">This key must be provided in the <code
+                                class="bg-base-200 px-1 rounded">x-api-key</code> header for all V1 translation
+                            requests.</p>
+
+                        <div class="bg-base-300 p-4 rounded-lg flex items-center justify-between font-mono">
+                            <span id="display-api-key" class="text-primary font-bold">gf_live_********</span>
+                            <button onclick="regenerateApiKey()" class="btn btn-sm btn-outline">Regenerate Key</button>
+                        </div>
+
+                        <div class="alert alert-info shadow-sm mt-6">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
+                                viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <span class="text-sm">For your security, once you navigate away, the full key cannot be
+                                viewed again.</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SYSTEM SETTINGS SECTION -->
+            <section id="view-system" class="view-section animate-in fade-in slide-in-from-bottom-2 duration-300">
+                <h2 class="text-3xl font-bold mb-8">System Settings & Version</h2>
+
+                <div class="card bg-base-100 shadow-sm border border-base-content/5 max-w-2xl">
+                    <div class="card-body">
+                        <div class="flex justify-between items-center mb-6">
+                            <div>
+                                <h3 class="font-bold">Software Version</h3>
+                                <div id="display-version" class="text-2xl font-mono mt-1">Loading...</div>
+                            </div>
+                            <button id="update-btn" onclick="checkUpdates()" class="btn btn-outline btn-sm">
+                                <span id="update-loader" class="loading loading-spinner loading-xs hidden"></span>
+                                Check for Updates
+                            </button>
+                        </div>
+
+                        <div id="update-container" class="hidden">
+                            <!-- Update Alert -->
+                            <div id="update-alert" class="alert shadow-sm border-primary/20 bg-primary/5">
+                                <div class="flex flex-col gap-2">
+                                    <div class="flex items-center gap-2 text-primary font-bold">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" class="h-5 w-5"
+                                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                        </svg>
+                                        New Version Available: <span id="latest-version-tag"></span>
+                                    </div>
+                                    <p class="text-xs opacity-70">A new release of the GigaFlair SIP2 Bridge is ready.
+                                        To update, please run the following on your host machine:</p>
+                                    <div
+                                        class="bg-black/20 p-2 rounded font-mono text-xs flex justify-between items-center group">
+                                        <code>docker compose pull && docker compose up -d</code>
+                                        <button
+                                            onclick="navigator.clipboard.writeText('docker compose pull && docker compose up -d')"
+                                            class="btn btn-ghost btn-xs opacity-0 group-hover:opacity-100 transition-opacity">Copy</button>
+                                    </div>
+                                    <div class="mt-2 text-right">
+                                        <a id="release-link" href="#" target="_blank"
+                                            class="btn btn-primary btn-sm">View Release Notes</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="no-update-msg" class="text-center py-4 hidden">
+                            <div class="text-success flex items-center justify-center gap-2 font-medium">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7" />
+                                </svg>
+                                Bridge is up to date
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- DATA & REPORTING SECTION -->
+            <section id="view-data" class="view-section animate-in fade-in slide-in-from-bottom-2 duration-300">
+                <h2 class="text-3xl font-bold mb-8">Data & Reporting</h2>
+
+                <div class="card bg-base-100 shadow-sm border border-base-content/5 max-w-2xl">
+                    <div class="card-body">
+                        <h3 class="font-bold mb-2">GigaFlair Data Vault: Secure Local Archiving</h3>
+                        <p class="text-sm text-base-content/60 mb-6">Status: Bridge Pre-Wired for Secure Archiving.
+                            Database Add-on Coming Soon.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- LOGS SECTION -->
+            <section id="view-logs" class="view-section animate-in fade-in slide-in-from-bottom-2 duration-300">
+                <div class="flex justify-between items-end mb-8">
+                    <div>
+                        <h2 class="text-3xl font-bold">Live System Logs</h2>
+                        <p class="text-base-content/60">Real-time SIP2 translation activity</p>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div
+                            class="flex items-center gap-2 bg-base-200 px-3 py-1.5 rounded-lg border border-base-content/5">
+                            <label class="text-[10px] font-bold uppercase opacity-40">Retention (h)</label>
+                            <input type="number" id="setting-retention"
+                                class="input input-xs w-16 bg-base-300 border-none text-center font-bold" min="24"
+                                max="720" value="168" />
+                            <button onclick="saveRetention()" class="btn btn-xs btn-primary">Save</button>
+                        </div>
+                        <button onclick="clearLogs()" class="btn btn-sm btn-ghost">Clear Console</button>
+                    </div>
+                </div>
+
+                <div id="log-container"
+                    class="bg-black/80 rounded-xl border border-white/5 p-4 font-mono text-xs overflow-y-auto h-[600px] flex flex-col gap-1">
+                    <div class="text-success opacity-40 italic mt-auto">// Log stream initialized...</div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- ADD USER MODAL -->
+    <dialog id="user_modal" class="modal">
+        <div class="modal-box bg-base-100">
+            <h3 class="font-bold text-lg mb-4">Add System User</h3>
+            <div class="space-y-4">
+                <div class="form-control">
+                    <label class="label"><span class="label-text">Username</span></label>
+                    <input type="text" id="new-username" class="input input-bordered" />
+                </div>
+                <div class="form-control">
+                    <label class="label"><span class="label-text">Password</span></label>
+                    <input type="password" id="new-password" class="input input-bordered" />
+                </div>
+                <div class="form-control">
+                    <label class="label"><span class="label-text">Role</span></label>
+                    <select id="new-role" class="select select-bordered">
+                        <option value="admin">Administrator</option>
+                        <option value="viewer">Viewer (Read Only)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-action">
+                <button onclick="user_modal.close()" class="btn">Cancel</button>
+                <button onclick="addUser()" class="btn btn-primary">Create User</button>
+            </div>
+        </div>
+    </dialog>
+
+    <!-- REVEAL KEY MODAL -->
+    <dialog id="reveal_modal" class="modal">
+        <div class="modal-box text-center bg-base-100 border border-primary/20">
+            <h3 class="font-bold text-2xl mb-4">New API Key Generated</h3>
+            <p class="py-4 text-base-content/70">Copy this key now. It will not be shown again.</p>
+            <div class="p-4 bg-base-200 rounded-lg text-left text-sm font-mono break-all select-all text-secondary">
+                <span id="new-key-value"></span>
+            </div>
+            <div class="modal-action justify-center">
+                <button onclick="reveal_modal.close()" class="btn btn-primary px-12">I have saved it</button>
+            </div>
+        </div>
+    </dialog>
+
+    <!-- RESET PASSWORD MODAL -->
+    <dialog id="reset_modal" class="modal">
+        <div class="modal-box bg-base-100">
+            <h3 class="font-bold text-lg">Reset User Password</h3>
+            <p class="text-sm opacity-60 mb-4" id="reset-user-text"></p>
+            <input type="hidden" id="reset-username" />
+            <div class="form-control w-full">
+                <label class="label"><span class="label-text text-xs uppercase font-bold opacity-50">New
+                        Password</span></label>
+                <input type="password" id="reset-new-password" class="input input-bordered" placeholder="••••••••" />
+            </div>
+            <div class="modal-action">
+                <button onclick="reset_modal.close()" class="btn btn-ghost">Cancel</button>
+                <button onclick="submitPasswordReset()" class="btn btn-primary">Update Password</button>
+            </div>
+        </div>
+    </dialog>
+
+    <script>
+        let currentUser = null;
+        let logStream = null;
+        let requestCount = 0;
+        let csrfToken = '';
+
+        async function getCsrfToken() {
+            try {
+                const res = await fetch('/api/admin/csrf-token');
+                const data = await res.json();
+                csrfToken = data.token;
+            } catch (err) { }
+        }
+
+        // Initialize
+        checkAuth();
+
+        async function checkAuth() {
+            try {
+                const res = await fetch('/api/admin/me');
+                const data = await res.json();
+                if (data.user) {
+                    currentUser = data.user;
+                    await getCsrfToken();
+                    setupApp();
+                } else {
+                    document.getElementById('login-screen').classList.remove('hidden');
+                }
+            } catch (err) {
+                document.getElementById('login-screen').classList.remove('hidden');
+            }
+        }
+
+        async function login() {
+            const u = document.getElementById('login-username').value;
+            const p = document.getElementById('login-password').value;
+            const errEl = document.getElementById('login-error');
+            const loader = document.getElementById('login-loader');
+            const btn = document.getElementById('login-btn');
+
+            errEl.classList.add('hidden');
+            loader.classList.remove('hidden');
+            btn.disabled = true;
+
+            try {
+                const res = await fetch('/api/admin/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: u, password: p })
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    currentUser = data.user;
+                    setupApp();
+                    await getCsrfToken(); // Get CSRF token after login
+                } else {
+                    const data = await res.json(); // Parse error message
+                    errEl.innerText = data.message || 'Login failed';
+                    errEl.classList.remove('hidden');
+                }
+            } catch (err) {
+                errEl.innerText = 'Connection error';
+                errEl.classList.remove('hidden');
+            } finally {
+                loader.classList.add('hidden');
+                btn.disabled = false;
+            }
+        }
+
+        async function logout() {
+            await fetch('/api/admin/logout', { method: 'POST' });
+            window.location.reload();
+        }
+
+        function setupApp() {
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('dashboard-app').classList.remove('hidden');
+            startStatusPolling();
+            startLogStream();
+            loadAllData();
+        }
+
+        function showSection(id) {
+            document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
+            document.getElementById(`view-${id}`).classList.add('active');
+
+            document.querySelectorAll('.nav-link').forEach(l => {
+                l.classList.remove('active', 'bg-primary', 'text-primary-content');
+            });
+            document.getElementById(`nav-${id}`).classList.add('active', 'bg-primary', 'text-primary-content');
+        }
+
+        function loadAllData() {
+            loadConfig();
+            loadUsers();
+            loadVersion();
+        }
+
+        async function loadVersion() {
+            try {
+                const res = await fetch('/api/system/version');
+                const data = await res.json();
+                document.getElementById('display-version').innerText = data.currentVersion;
+
+                if (data.updateAvailable) {
+                    showUpdate(data);
+                }
+            } catch (err) { }
+        }
+
+        async function checkUpdates() {
+            const btn = document.getElementById('update-btn');
+            const loader = document.getElementById('update-loader');
+            const noUpdate = document.getElementById('no-update-msg');
+            const container = document.getElementById('update-container');
+
+            btn.disabled = true;
+            loader.classList.remove('hidden');
+            noUpdate.classList.add('hidden');
+            container.classList.add('hidden');
+
+            try {
+                const res = await fetch('/api/system/version');
+                const data = await res.json();
+
+                if (data.updateAvailable) {
+                    showUpdate(data);
+                } else {
+                    noUpdate.classList.remove('hidden');
+                }
+            } catch (err) {
+                alert('Update check failed: ' + err.message);
+            } finally {
+                btn.disabled = false;
+                loader.classList.add('hidden');
+            }
+        }
+
+        function showUpdate(data) {
+            const alert = document.getElementById('update-alert');
+            const tag = document.getElementById('latest-version-tag');
+            const link = document.getElementById('release-link');
+
+            tag.innerText = data.latestVersion;
+            link.href = data.releaseUrl;
+
+            // Reset styling
+            alert.className = 'alert shadow-sm border-primary/20 bg-primary/5';
+
+            if (data.isCritical) {
+                alert.className = 'alert shadow-sm border-error/30 bg-error/10';
+                const parent = tag.parentElement;
+                parent.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" class="h-5 w-5 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                    CRITICAL Security Update: <span id="latest-version-tag">${data.latestVersion}</span>
+                `;
+            }
+
+            document.getElementById('update-container').classList.remove('hidden');
+        }
+
+        async function loadConfig() {
+            const res = await fetch('/api/admin/config');
+            const config = await res.json();
+
+            // Populate Overview
+            document.getElementById('summary-host').innerText = config.lmsHost;
+            document.getElementById('summary-port').innerText = config.lmsPort;
+            document.getElementById('display-api-key').innerText = config.bridgeApiKey.maskedValue;
+
+            // Populate Settings
+            document.getElementById('setting-host').value = config.lmsHost;
+            document.getElementById('setting-port').value = config.lmsPort;
+            document.getElementById('setting-user').value = config.sip2User || '';
+            document.getElementById('setting-location').value = config.sip2Location || '';
+            document.getElementById('setting-retention').value = config.logRetentionHours || 168;
+        }
+
+        async function loadUsers() {
+            const res = await fetch('/api/admin/users');
+            const users = await res.json();
+            const body = document.getElementById('user-table-body');
+            body.innerHTML = '';
+
+            users.forEach(u => {
+                const tr = document.createElement('tr');
+
+                const tdUser = document.createElement('td');
+                tdUser.className = 'font-medium';
+                tdUser.textContent = u.username;
+                if (u.username === currentUser.username) {
+                    const badge = document.createElement('span');
+                    badge.className = 'badge badge-sm badge-secondary ml-1';
+                    badge.textContent = 'You';
+                    tdUser.appendChild(badge);
+                }
+
+                const tdRole = document.createElement('td');
+                tdRole.innerHTML = `<span class="badge badge-outline opacity-60">${u.role}</span>`;
+
+                const tdSec = document.createElement('td');
+                tdSec.innerHTML = u.mfaEnabled ? '<span class="badge badge-success badge-xs">MFA</span>' : '<span class="text-xs opacity-30 italic">Password Only</span>';
+
+                const tdActions = document.createElement('td');
+                tdActions.className = 'text-right';
+
+                const btnReset = document.createElement('button');
+                btnReset.className = 'btn btn-ghost btn-xs';
+                btnReset.textContent = 'Reset Pass';
+                btnReset.onclick = () => resetPasswordPrompt(u.username);
+
+                const btnDelete = document.createElement('button');
+                btnDelete.className = 'btn btn-ghost btn-xs text-error';
+                btnDelete.textContent = 'Delete';
+                btnDelete.disabled = users.length <= 1 || (u.role !== 'admin' && users.filter(x => x.role === 'admin').length <= 1) || u.username === currentUser.username;
+                btnDelete.onclick = () => deleteUser(u.username);
+
+                tdActions.appendChild(btnReset);
+                tdActions.appendChild(btnDelete);
+
+                tr.appendChild(tdUser);
+                tr.appendChild(tdRole);
+                tr.appendChild(tdSec);
+                tr.appendChild(tdActions);
+                body.appendChild(tr);
+            });
+        }
+
+        async function addUser() {
+            const u = document.getElementById('new-username').value;
+            const p = document.getElementById('new-password').value;
+            const r = document.getElementById('new-role').value;
+
+            try {
+                const res = await fetch('/api/admin/users', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-csrf-token': csrfToken
+                    },
+                    body: JSON.stringify({ username: u, password: p, role: r })
+                });
+                if (res.ok) {
+                    user_modal.close();
+                    loadUsers();
+                } else {
+                    const data = await res.json();
+                    alert(data.message);
+                }
+            } catch (err) {
+                alert('Connection error');
+            }
+        }
+
+        async function deleteUser(username) {
+            if (!confirm(`Are you sure you want to delete ${username}?`)) return;
+            const res = await fetch(`/api/admin/users/${username}`, {
+                method: 'DELETE',
+                headers: { 'x-csrf-token': csrfToken }
+            });
+            if (res.ok) loadUsers();
+            else alert((await res.json()).message);
+        }
+
+        function resetPasswordPrompt(username) {
+            document.getElementById('reset-user-text').innerText = `Setting new password for ${username}`;
+            document.getElementById('reset-username').value = username;
+            document.getElementById('reset-new-password').value = '';
+            reset_modal.showModal();
+        }
+
+        async function submitPasswordReset() {
+            const username = document.getElementById('reset-username').value;
+            const newPassword = document.getElementById('reset-new-password').value;
+            if (!newPassword) return alert('Password cannot be empty');
+
+            await resetPassword(username, newPassword);
+            reset_modal.close();
+        }
+
+        async function resetPassword(username, newPassword) {
+            const res = await fetch(`/api/admin/users/${username}/reset-password`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-csrf-token': csrfToken
+                },
+                body: JSON.stringify({ newPassword })
+            });
+            if (res.ok) alert('Password updated successfully');
+            else alert((await res.json()).message);
+        }
+
+        async function saveLmsSettings() {
+            const body = {
+                lmsHost: document.getElementById('setting-host').value,
+                lmsPort: parseInt(document.getElementById('setting-port').value),
+                sip2User: document.getElementById('setting-user').value,
+                sip2Password: document.getElementById('setting-pass').value,
+                sip2Location: document.getElementById('setting-location').value
+            };
+            const res = await fetch('/api/admin/config', {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json', 'x-csrf-token': csrfToken },
+                body: JSON.stringify(body)
+            });
+            if (res.ok) {
+                alert('Settings saved. The connection will re-establish automatically.');
+                loadConfig();
+            } else alert('Save failed');
+        }
+
+        async function testLmsSettings() {
+            const body = {
+                lmsHost: document.getElementById('setting-host').value,
+                lmsPort: parseInt(document.getElementById('setting-port').value),
+                sip2User: document.getElementById('setting-user').value,
+                sip2Password: document.getElementById('setting-pass').value
+            };
+            const res = await fetch('/api/setup/test-connection', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'x-csrf-token': csrfToken },
+                body: JSON.stringify(body)
+            });
+            const data = await res.json();
+            alert(data.success ? '✓ SUCCESS: ' + data.message : '✗ FAILED: ' + data.message);
+        }
+
+        async function saveRetention() {
+            const hours = parseInt(document.getElementById('setting-retention').value);
+            if (isNaN(hours) || hours < 24 || hours > 720) return alert('Retention must be between 24 and 720 hours');
+
+            const res = await fetch('/api/admin/config', {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-csrf-token': csrfToken
+                },
+                body: JSON.stringify({ logRetentionHours: hours })
+            });
+            if (res.ok) {
+                alert('Retention settings saved.');
+                loadConfig();
+            } else alert('Save failed');
+        }
+
+        async function reconnect() {
+            await fetch('/api/admin/reconnect', {
+                method: 'POST',
+                headers: { 'x-csrf-token': csrfToken }
+            });
+            alert('Reconnection signal sent.');
+        }
+
+        async function regenerateApiKey() {
+            if (!confirm('This will invalidate the current key immediately. Continue?')) return;
+            const res = await fetch('/api/admin/config/regenerate-api-key', {
+                method: 'POST',
+                headers: { 'x-csrf-token': csrfToken }
+            });
+            const data = await res.json();
+            document.getElementById('new-key-value').innerText = data.key;
+            reveal_modal.showModal();
+            loadConfig();
+        }
+
+        async function updateHealth() {
+            if (!currentUser || currentUser.role !== 'admin') {
+                const widget = document.getElementById('health-widget');
+                if (widget) widget.classList.add('hidden');
+                return;
+            }
+
+            try {
+                const res = await fetch('/api/system/health');
+                if (!res.ok) throw new Error('Health check failed');
+                const data = await res.json();
+
+                const indicator = document.getElementById('health-indicator');
+                const summary = document.getElementById('health-summary');
+                const details = document.getElementById('health-details');
+
+                indicator.classList.remove('animate-pulse', 'bg-neutral', 'bg-success', 'bg-warning', 'bg-error');
+
+                const isLmsConnected = data.lmsStatus === 'reachable';
+
+                if (isLmsConnected) {
+                    indicator.classList.add('bg-success');
+                    summary.innerText = 'System Healthy';
+                    summary.className = 'text-xs font-bold uppercase tracking-wider text-success';
+                } else {
+                    indicator.classList.add('bg-warning');
+                    summary.innerText = 'LMS Offline';
+                    summary.className = 'text-xs font-bold uppercase tracking-wider text-warning';
+                }
+
+                details.innerText = `LMS: ${data.lmsStatus} • ${data.memoryUsageMb} MB`;
+
+            } catch (err) {
+                const indicator = document.getElementById('health-indicator');
+                indicator.classList.remove('animate-pulse');
+                indicator.classList.add('bg-error');
+                document.getElementById('health-summary').innerText = 'Health Check Failed';
+            }
+        }
+
+        function startStatusPolling() {
+            // Initial health check
+            updateHealth();
+
+            // Health polling (30s)
+            setInterval(updateHealth, 30000);
+
+            setInterval(async () => {
+                try {
+                    const res = await fetch('/api/admin/status');
+                    const status = await res.json();
+
+                    const el = document.getElementById('status-badge');
+                    el.innerText = status.state;
+                    el.classList.remove('badge-success', 'badge-error', 'badge-warning');
+                    if (status.state === 'CLOSED') el.classList.add('badge-success');
+                    else if (status.state === 'OPEN') el.classList.add('badge-error');
+                    else el.classList.add('badge-warning');
+
+                    // Uptime
+                    const h = Math.floor(status.uptime / 3600);
+                    const m = Math.floor((status.uptime % 3600) / 60);
+                    const s = Math.floor(status.uptime % 60);
+                    document.getElementById('uptime-display').innerText =
+                        `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+                } catch (err) { }
+            }, 3000);
+        }
+
+        function startLogStream() {
+            if (logStream) logStream.close();
+            logStream = new EventSource('/api/admin/logs');
+            logStream.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                appendLog(data);
+                if (data.message.includes('Request')) requestCount++;
+                document.getElementById('request-count').innerText = requestCount;
+            };
+            logStream.onerror = () => {
+                console.warn('Log stream disconnected. Reconnecting in 3s...');
+                logStream.close();
+                setTimeout(startLogStream, 3000);
+            };
+        }
+
+        function appendLog(data) {
+            const container = document.getElementById('log-container');
+            const div = document.createElement('div');
+            const timeStr = new Date(data.timestamp).toLocaleTimeString([], { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+            let colorClass = 'text-base-content/60';
+            if (data.level === 'error') colorClass = 'text-error';
+            if (data.level === 'warn') colorClass = 'text-warning';
+            if (data.message === 'SIP2 Request') colorClass = 'text-primary';
+            if (data.message === 'SIP2 Response') colorClass = 'text-secondary';
+
+            // SECURITY: Use textContent for message and details to prevent XSS
+            const timeSpan = document.createElement('span');
+            timeSpan.className = 'opacity-30';
+            timeSpan.textContent = `[${timeStr}] `;
+            div.appendChild(timeSpan);
+
+            const msgSpan = document.createElement('span');
+            msgSpan.className = `font-bold ${colorClass}`;
+            msgSpan.textContent = data.message.padEnd(14);
+            div.appendChild(msgSpan);
+
+            const detailSpan = document.createElement('span');
+            detailSpan.className = 'opacity-80';
+            detailSpan.textContent = data.details?.raw || '';
+            div.appendChild(detailSpan);
+
+            container.appendChild(div);
+            container.scrollTop = container.scrollHeight;
+
+            // Keep only last 200 logs
+            if (container.children.length > 200) container.removeChild(container.children[1]); // Keep the first '//' line
+        }
+
+        function clearLogs() {
+            document.getElementById('log-container').innerHTML = '<div class="text-success opacity-40 italic mt-auto">// Console cleared...</div>';
+        }
+    </script>
+</body>
+
+</html>

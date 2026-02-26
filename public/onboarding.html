@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="night">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day Zero Setup — GigaFlair</title>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" type="text/css"
+        integrity="sha384-yxrQVVFFRZdq4Z/YbeTDzSYbn1W6VnVonm2vAgnxtxUMehcccE4k2NufOz2tJnOe" crossorigin="anonymous" />
+    <script src="https://cdn.tailwindcss.com/3.4.1"
+        integrity="sha384-SOMLQz+nKv/ORIYXo3J3NrWJ33oBgGvkHlV9t8i70QVLq8ZtST9Np1gDsVUkk4xN"
+        crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@800&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --gf-primary: #4F46E5;
+            --gf-primary-dark: #3730C4;
+            --gf-glow: rgba(79, 70, 229, 0.28);
+            --gf-white: #F8FAFC;
+        }
+
+        [data-theme="night"] {
+            --p: 244 73% 58%;
+            --pf: 244 73% 48%;
+            --pc: 0 0% 100%;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #0d1117;
+            background-image:
+                radial-gradient(ellipse at 70% 15%, rgba(79, 70, 229, 0.16) 0%, transparent 55%),
+                radial-gradient(ellipse at 20% 85%, rgba(79, 70, 229, 0.08) 0%, transparent 50%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.016) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.016) 1px, transparent 1px);
+            background-size: 48px 48px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* GigaFlair Wordmark */
+        .gf-wordmark {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 800;
+            font-size: 2rem;
+            line-height: 1;
+            letter-spacing: -0.02em;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .gf-wordmark .giga {
+            color: var(--gf-white);
+            -webkit-text-stroke: 0.6px rgba(0, 0, 0, 0.35);
+            paint-order: stroke fill;
+        }
+
+        .gf-wordmark .flair {
+            color: var(--gf-primary);
+            -webkit-text-stroke: 0.6px rgba(0, 0, 0, 0.25);
+            paint-order: stroke fill;
+        }
+
+        .glass-card {
+            background: rgba(18, 22, 38, 0.84);
+            backdrop-filter: blur(24px) saturate(160%);
+            -webkit-backdrop-filter: blur(24px) saturate(160%);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            box-shadow:
+                0 0 0 1px rgba(79, 70, 229, 0.12),
+                0 32px 80px rgba(0, 0, 0, 0.5),
+                inset 0 1px 0 rgba(255, 255, 255, 0.055);
+        }
+
+        .btn-gigaflair {
+            background: linear-gradient(135deg, var(--gf-primary) 0%, #6366f1 100%);
+            border: none;
+            color: #fff !important;
+            font-weight: 600;
+            letter-spacing: 0.01em;
+            box-shadow: 0 4px 24px var(--gf-glow), 0 1px 3px rgba(0, 0, 0, 0.3);
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-gigaflair::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.13) 0%, transparent 58%);
+            pointer-events: none;
+        }
+
+        .btn-gigaflair:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 32px var(--gf-glow), 0 2px 8px rgba(0, 0, 0, 0.4);
+            filter: brightness(1.07);
+        }
+
+        .btn-gigaflair:active {
+            transform: translateY(0);
+        }
+
+        .btn-gigaflair:disabled {
+            opacity: 0.5;
+            transform: none;
+            cursor: not-allowed;
+        }
+
+        .input:focus {
+            border-color: var(--gf-primary) !important;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2) !important;
+            outline: none;
+        }
+
+        .gf-footer {
+            font-size: 11px;
+            letter-spacing: 0.05em;
+            color: rgba(255, 255, 255, 0.18);
+            font-weight: 500;
+        }
+
+        .content-wrap {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2.5rem 1rem 2rem;
+            gap: 2.25rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="content-wrap">
+
+        <!-- GigaFlair Wordmark -->
+        <div class="flex flex-col items-center gap-2" aria-label="GigaFlair">
+            <div class="gf-wordmark">
+                <span class="giga">Giga</span><span class="flair">Flair</span>
+            </div>
+            <div class="text-xs font-medium"
+                style="color: rgba(255,255,255,0.3); letter-spacing: 0.14em; text-transform: uppercase;">SIP2 Bridge
+                Appliance</div>
+        </div>
+
+        <!-- Card -->
+        <div class="glass-card rounded-2xl w-full max-w-md" style="padding: 2.75rem 2.5rem;">
+
+            <div class="text-center mb-8">
+                <h1 class="text-2xl font-bold text-white tracking-tight">Create Master Administrator</h1>
+                <p class="text-sm mt-2" style="color: rgba(255,255,255,0.42);">One-time setup. Credentials are securely hashed and cannot be recovered.</p>
+            </div>
+
+            <div class="space-y-5">
+                <div>
+                    <label class="block text-sm font-semibold mb-1.5"
+                        style="color: rgba(255,255,255,0.65);">Username</label>
+                    <input type="text" id="username" value="admin"
+                        class="input input-bordered w-full bg-white/5 border-white/10 text-white transition-all" />
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold mb-1.5"
+                        style="color: rgba(255,255,255,0.65);">Password</label>
+                    <input type="password" id="password" placeholder="Minimum 8 characters"
+                        class="input input-bordered w-full bg-white/5 border-white/10 text-white transition-all" />
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold mb-1.5" style="color: rgba(255,255,255,0.65);">Confirm
+                        Password</label>
+                    <input type="password" id="confirmPassword" placeholder="Re-enter password"
+                        class="input input-bordered w-full bg-white/5 border-white/10 text-white transition-all" />
+                </div>
+
+                <div id="errorBox" class="alert alert-error text-sm py-2.5 hidden animate-in fade-in duration-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-5 w-5" fill="none"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span id="errorMsg"></span>
+                </div>
+
+                <!-- Security Status Indicator -->
+                <div id="securityStatus"
+                    class="flex items-center justify-center gap-2 py-2 px-3 rounded-lg bg-white/5 border border-white/5 opacity-60">
+                    <span id="securityShield" class="text-gray-500 animate-pulse">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                            viewBox="0 0 16 16">
+                            <path
+                                d="M5.072.56C6.157.265 7.31 0 8 0s1.843.265 2.928.56c1.11.3 2.229.655 2.887.87a1.54 1.54 0 0 1 1.044 1.262c.596 4.477-.787 7.795-2.465 9.99a11.775 11.775 0 0 1-2.517 2.453 7.159 7.159 0 0 1-1.048.625c-.28.132-.581.24-.829.24s-.548-.108-.829-.24c-.282-.132-.583-.241-.848-.364a11.777 11.777 0 0 1-3.422-3.122C2.019 9.972.651 6.643 1.258 2.164A1.54 1.54 0 0 1 2.3 1.262c.658-.215 1.777-.57 2.887-.87zM8 1.056c-.633 0-1.636.241-2.655.518-.946.257-1.897.545-2.476.735a.54.54 0 0 0-.365.44c-.544 3.991.644 6.897 2.067 8.761a10.774 10.774 0 0 0 2.274 2.235c.204.148.4.285.594.417.194-.132.39-.269.594-.417a10.778 10.778 0 0 0 2.274-2.235c1.423-1.864 2.611-4.77 2.067-8.761a.54.54 0 0 0-.365-.44c-.579-.19-1.53-.478-2.476-.735-1.019-.277-2.022-.518-2.655-.518z" />
+                        </svg>
+                    </span>
+                    <span id="securityText" class="text-xs font-medium text-white/40">Initializing Security
+                        Vault...</span>
+                </div>
+
+                <button id="submitBtn" onclick="createAdmin()" class="btn btn-gigaflair w-full mt-2"
+                    style="height: 48px; border-radius: 10px;">
+                    <span id="loader" class="loading loading-spinner loading-sm hidden"></span>
+                    <span id="btnText">Save &amp; Continue to Setup →</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="gf-footer text-center">
+            © 2026 GigaFlair LLC
+        </div>
+
+    </div>
+
+    <script>
+        // Show security vault status (purely cosmetic — no sensitive data fetched before admin exists)
+        function showSecurityReady() {
+            const statusDiv = document.getElementById('securityStatus');
+            const shield = document.getElementById('securityShield');
+            const text = document.getElementById('securityText');
+
+            statusDiv.classList.remove('opacity-60');
+            statusDiv.classList.add('bg-success/5', 'border-success/20');
+            shield.classList.remove('text-gray-500', 'animate-pulse');
+            shield.classList.add('text-success');
+            shield.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M5.5 7a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5z"/>
+                <path d="M5.072.56C6.157.265 7.31 0 8 0s1.843.265 2.928.56c1.11.3 2.229.655 2.887.87a1.54 1.54 0 0 1 1.044 1.262c.596 4.477-.787 7.795-2.465 9.99a11.775 11.775 0 0 1-2.517 2.453 7.159 7.159 0 0 1-1.048.625c-.28.132-.581.24-.829.24s-.548-.108-.829-.24c-.282-.132-.583-.241-.848-.364a11.777 11.777 0 0 1-3.422-3.122C2.019 9.972.651 6.643 1.258 2.164A1.54 1.54 0 0 1 2.3 1.262c.658-.215 1.777-.57 2.887-.87zM8 1.056c-.633 0-1.636.241-2.655.518-.946.257-1.897.545-2.476.735a.54.54 0 0 0-.365.44c-.544 3.991.644 6.897 2.067 8.761a10.774 10.774 0 0 0 2.274 2.235c.204.148.4.285.594.417.194-.132.39-.269.594-.417a10.778 10.778 0 0 0 2.274-2.235c1.423-1.864 2.611-4.77 2.067-8.761a.54.54 0 0 0-.365-.44c-.579-.19-1.53-.478-2.476-.735-1.019-.277-2.022-.518-2.655-.518z"/>
+            </svg>`;
+            text.innerText = 'Security Vault: Ready';
+            text.classList.remove('text-white/40');
+            text.classList.add('text-success/80');
+        }
+        showSecurityReady();
+
+        async function createAdmin() {
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            const confirm = document.getElementById('confirmPassword').value;
+            const btn = document.getElementById('submitBtn');
+            const loader = document.getElementById('loader');
+            const btnText = document.getElementById('btnText');
+            const errorBox = document.getElementById('errorBox');
+            const errorMsg = document.getElementById('errorMsg');
+
+            errorBox.classList.add('hidden');
+
+            if (!password || password.length < 8) {
+                errorMsg.innerText = 'Password must be at least 8 characters.';
+                errorBox.classList.remove('hidden');
+                return;
+            }
+
+            if (password !== confirm) {
+                errorMsg.innerText = 'Passwords do not match.';
+                errorBox.classList.remove('hidden');
+                return;
+            }
+
+            btn.disabled = true;
+            loader.classList.remove('hidden');
+            btnText.innerText = 'Securing credentials…';
+
+            try {
+                const response = await fetch('/api/setup/create-admin', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    btnText.innerText = '✓ Account created — redirecting…';
+                    setTimeout(() => { window.location.href = '/setup'; }, 800);
+                } else {
+                    errorMsg.innerText = data.message || 'Creation failed. Please try again.';
+                    errorBox.classList.remove('hidden');
+                    btn.disabled = false;
+                    loader.classList.add('hidden');
+                    btnText.innerText = 'Save & Continue to Setup →';
+                }
+            } catch (err) {
+                errorMsg.innerText = 'Network error. Please check the appliance connection.';
+                errorBox.classList.remove('hidden');
+                btn.disabled = false;
+                loader.classList.add('hidden');
+                btnText.innerText = 'Save & Continue to Setup →';
+            }
+        }
+    </script>
+</body>
+
+</html>
