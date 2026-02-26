@@ -137,3 +137,7 @@ tests/test-config-*.json
 tests/.master_key
 test-*.http
 !test.http
+
+# Test fixture secrets (generated at runtime)
+tests/fixtures/*.pem
+tests/fixtures/*.key

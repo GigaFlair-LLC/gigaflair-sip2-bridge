@@ -663,7 +663,7 @@ export async function createServer(): Promise<FastifyInstance> {
     server.post('/api/setup/initialize', async (request, reply) => {
         const parsed = InitializeBodySchema.safeParse(request.body);
         if (!parsed.success) {
-            return reply.status(400).send({ error: 'Bad Request', message: 'Invalid setup parameters', details: parsed.error.errors });
+            return reply.status(400).send({ error: 'Bad Request', message: 'Invalid setup parameters', details: parsed.error.issues });
         }
         const { lmsHost, lmsPort, sip2User, sip2Password, sip2Location, vendorProfile } = parsed.data;
 

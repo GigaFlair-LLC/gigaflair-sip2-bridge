@@ -1,21 +1,24 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeAll, beforeEach, afterEach } from 'vitest';
 import tls from 'node:tls';
-import fs from 'node:fs';
-import path from 'node:path';
+import selfsigned from 'selfsigned';
 import { SipClient } from '../src/services/sip-client.js';
 
 describe('SIPClient TLS Connection', () => {
     let server: tls.Server;
     let client: SipClient;
     const PORT = 6040;
-    const certPath = path.resolve('tests/fixtures/cert.pem');
-    const keyPath = path.resolve('tests/fixtures/key.pem');
+    let tlsOptions: { key: string; cert: string };
+
+    beforeAll(async () => {
+        const pems = await selfsigned.generate(
+            [{ name: 'commonName', value: 'localhost' }],
+            { days: 1, keySize: 2048 }
+        );
+        tlsOptions = { key: pems.private, cert: pems.cert };
+    });
 
     beforeEach(async () => {
-        const options = {
-            key: fs.readFileSync(keyPath),
-            cert: fs.readFileSync(certPath)
-        };
+        const options = tlsOptions;
 
         server = tls.createServer(options, (socket) => {
             socket.on('data', () => {

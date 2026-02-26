@@ -11,7 +11,7 @@ export function handleSipError(err: unknown, fastify: FastifyInstance, reply: Fa
         return reply.status(400).send({
             error: 'Bad Request',
             message: 'Validation failed',
-            details: error.errors
+            details: error.issues
         });
     }
 

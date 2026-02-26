@@ -35,7 +35,7 @@ describe('sip2-json Robustness Test', () => {
             });
 
             expect(response.statusCode).toBe(400);
-            expect(response.payload).toContain('Required');
+            expect(response.payload).toContain('Validation failed');
         });
 
         it('should reject invalid barcode type with 400', async () => {
